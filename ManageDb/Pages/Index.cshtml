@@ -1,0 +1,44 @@
+﻿@page
+@model IndexModel
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+<div class="row">
+    <div class="col-2 col">
+        <text>Filters</text>
+    </div>
+    <div class="col text-end">
+        <h6>Всего записей: @Model.TNVEDCodes.Count</h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-2 col">
+        <input type="search" placeholder="Enter code" />
+    </div>
+    <div class="col">
+        <input type="search" placeholder="Enter name" class="col-12" />
+    </div>
+</div>
+<div class="text-start">
+    <div class="justify-content-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-2" scope="col">Code</th>
+                    <th scope="col">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.TNVEDCodes)
+            {
+                <tr>
+                    <th scope="row">@String.Format("{0}{1}{2}{3} {4}{5} {6}{7}{8} {9}", item.Code[0], item.Code[1], item.Code[2], 
+                        item.Code[3], item.Code[4], item.Code[5], item.Code[6], item.Code[7], item.Code[8], item.Code[9])</th>
+                    <td>@item.Name</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

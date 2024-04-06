@@ -1,0 +1,42 @@
+﻿@page "/TNVEDCode/Create"
+@model ManageDb.Pages.Views.TNVEDCode.CreateModel
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>TNVEDCode</h4>
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TNVEDCode.Code" class="control-label"></label>
+                <input asp-for="TNVEDCode.Code" class="form-control" />
+                <span asp-validation-for="TNVEDCode.Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TNVEDCode.Name" class="control-label"></label>
+                <input asp-for="TNVEDCode.Name" class="form-control" />
+                <span asp-validation-for="TNVEDCode.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TNVEDCode.TechRegs" class="control-label"></label>
+                <select class="form-control" name="TNVEDCode_TechRegs" asp-for="TNVEDCode.TechRegs" asp-items="Model.TechRegNameMSL" multiple>
+                </select>
+                <span asp-validation-for="TNVEDCode.TechRegs" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

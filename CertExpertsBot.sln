@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertExpertsBot", "CertExpertsBot\CertExpertsBot.csproj", "{2B091C52-0B00-4791-8E28-41A6C2D901EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManageDb", "ManageDb\ManageDb.csproj", "{8FBA248D-51CA-42BA-B579-0CFDEC33578C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B091C52-0B00-4791-8E28-41A6C2D901EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B091C52-0B00-4791-8E28-41A6C2D901EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B091C52-0B00-4791-8E28-41A6C2D901EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B091C52-0B00-4791-8E28-41A6C2D901EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3C607148-E3AE-40FC-8565-030E54828987}
+	EndGlobalSection
+EndGlobal

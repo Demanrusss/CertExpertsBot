@@ -1,0 +1,36 @@
+﻿@page "/TechReg"
+@model ManageDb.Pages.Views.TechReg.IndexModel
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="col">
+                @Html.DisplayNameFor(model => model.TechRegs)
+            </th>
+            <th class="col-3">Описание</th>
+            <th class="col-2"></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TechRegs) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td class="col-md-2 text-end">
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

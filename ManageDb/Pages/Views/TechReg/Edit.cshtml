@@ -1,0 +1,37 @@
+﻿@page "/TechReg/Edit"
+@model ManageDb.Pages.Views.TechReg.EditModel
+
+<h1>@ViewData["Title"]</h1>
+
+<h4>TechReg</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TechReg.Id" />
+            <div class="form-group">
+                <label asp-for="TechReg.Name" class="control-label"></label>
+                <input asp-for="TechReg.Name" class="form-control" required />
+                <span asp-validation-for="TechReg.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TechReg.Description" class="control-label"></label>
+                <input asp-for="TechReg.Description" class="form-control" required />
+                <span asp-validation-for="TechReg.Description" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

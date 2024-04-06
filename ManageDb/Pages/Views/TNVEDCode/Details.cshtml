@@ -1,0 +1,36 @@
+﻿@page "/TNVEDCode/Details"
+@model ManageDb.Pages.Views.TNVEDCode.DetailsModel
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <h4>TNVEDCode</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TNVEDCode.Code)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TNVEDCode.Code)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TNVEDCode.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TNVEDCode.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TNVEDCode.TechRegs)
+        </dt>
+        <dd class="col-sm-10">
+        @foreach (var item in Model.TNVEDCode.TechRegs)
+        {
+            @item.Name<br />
+        }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TNVEDCode?.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
