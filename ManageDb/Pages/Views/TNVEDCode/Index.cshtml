@@ -10,12 +10,20 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TNVEDCode)
+                @Html.DisplayNameFor(model => model.TNVEDCode.First().Code)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TNVEDCode)
+                @Html.DisplayNameFor(model => model.TNVEDCode.First().Name)
             </th>
-            <th></th>
+            <td class="text-end">
+                <b>Показать</b>
+                <select>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </td>
         </tr>
     </thead>
     <tbody>
