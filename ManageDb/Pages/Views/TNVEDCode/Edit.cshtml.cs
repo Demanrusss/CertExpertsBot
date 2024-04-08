@@ -1,9 +1,5 @@
 ﻿using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 
 namespace ManageDb.Pages.Views.TNVEDCode
 {

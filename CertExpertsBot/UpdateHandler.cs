@@ -1,15 +1,13 @@
 ﻿using CertExpertsBot.UpdateTypeHandlers;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CertExpertsBot
 {
-    public class UpdateHandler : IUpdateHandler
+    public static class UpdateHandler
     {
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, 
+        public static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
             Update update, CancellationToken cancellationToken)
         {
             if (botClient == null || update == null)
@@ -25,7 +23,7 @@ namespace CertExpertsBot
                         if (!String.IsNullOrWhiteSpace(response))
                         {
                             if (response.Contains("Запустил обработчик кодов ТНВЭД"))
-                                //TODO: Что-то хотел с этим сделать;
+                                ;//TODO: Что-то хотел с этим сделать;
                               
                             await botClient.SendTextMessageAsync(message.Chat, response);
                         }    
@@ -38,7 +36,7 @@ namespace CertExpertsBot
             }
         }
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
+        public static Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
             Exception exception, CancellationToken cancellationToken)
         {
             Console.Error.WriteLine(exception);

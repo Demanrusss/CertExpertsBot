@@ -1,6 +1,5 @@
 ﻿using ManageDb.Models;
 using ManageDb.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ManageDb.Pages

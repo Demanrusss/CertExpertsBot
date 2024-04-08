@@ -1,23 +1,25 @@
-﻿using Telegram.Bot;
+﻿using CertExpertsBot.Models;
+using Newtonsoft.Json;
+using Telegram.Bot;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CertExpertsBot
 {
     class Program
     {
-        private static void Main(string[] args)
-        {
-            var bot = new TelegramBotClient("");
+        private static readonly AppSettings settings = JsonConvert.DeserializeObject<AppSettings>(System.IO.File.ReadAllText("appsettings.json"))!;
+        static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
 
+        static void Main(string[] args)
+        {
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
-            var handler = new UpdateHandler();
             var receiverOptions = CreateReceiverOptions();
-
             bot.StartReceiving(
-                handler.HandleUpdateAsync,
-                handler.HandlePollingErrorAsync,
+                HandleUpdateAsync,
+                HandlePollingErrorAsync,
                 receiverOptions,
                 cancellationToken
             );
@@ -36,10 +38,21 @@ namespace CertExpertsBot
             {
                 UpdateType.Message
             };
-            
+
             receiverOptions.AllowedUpdates = allowedUpdates;
+            receiverOptions.ThrowPendingUpdates = true;
 
             return receiverOptions;
+        }
+
+        public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        {
+            await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
+        }
+
+        public static Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        {
+            return UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
         }
     }
 }

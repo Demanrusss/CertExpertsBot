@@ -1,4 +1,5 @@
 ﻿using CertExpertsBot.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Telegram.Bot.Types;
 
@@ -6,7 +7,7 @@ namespace CertExpertsBot.UpdateTypeHandlers
 {
     public static class MessageHandler
     {
-        private static readonly DbContext dbContext = new DbContext();
+        private static readonly AppDbContext dbContext = new AppDbContext();
 
         public static string Response(Message message)
         {
@@ -64,7 +65,7 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnCommand_TNVED()
         {
-            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (#xxxxxxxxxx)";
+            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (.xxxxxxxxxx)";
         }
 
         private static string ResponseOnOtherText()
@@ -77,7 +78,9 @@ namespace CertExpertsBot.UpdateTypeHandlers
             if (String.IsNullOrWhiteSpace(code) || code.Length != 10)
                 return "Нужно указать полный код ТН ВЭД (10 цифр)";
 
-            var tnved = dbContext.TNVEDCodes.FirstOrDefault(c => c.Code == code);
+            var tnved = dbContext.TNVEDCodes
+                .Include(c => c.TechRegs)
+                .FirstOrDefault(c => c.Code == code);
 
             return tnved != null ? tnved.ToString() : "Такой код ТН ВЭД не найден";
         }

@@ -1,6 +1,4 @@
-﻿using ManageDb.Models;
-
-namespace ManageDb.Services
+﻿namespace ManageDb.Services
 {
     public interface ITechRegService<T> : IService<T>
     {

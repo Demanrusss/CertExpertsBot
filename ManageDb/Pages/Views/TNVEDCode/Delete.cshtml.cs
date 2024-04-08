@@ -1,7 +1,6 @@
 ﻿using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace ManageDb.Pages.Views.TNVEDCode
 {

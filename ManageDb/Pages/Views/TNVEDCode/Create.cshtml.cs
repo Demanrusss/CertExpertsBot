@@ -1,8 +1,5 @@
-﻿using ManageDb.Models;
-using ManageDb.Services;
+﻿using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ManageDb.Pages.Views.TNVEDCode
 {

@@ -1,6 +1,5 @@
 ﻿using ManageDb.Data;
 using ManageDb.Models;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace ManageDb.Services
