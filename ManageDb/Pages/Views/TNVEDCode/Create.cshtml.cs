@@ -24,6 +24,27 @@ namespace ManageDb.Pages.Views.TNVEDCode
             return Page();
         }
 
+        public async Task<IActionResult> OnGetCopyFrom(int id)
+        {
+            ViewData["Title"] = $"Create from {id}";
+
+            if (id == 0 || tNVEDCodeService == null)
+                return NotFound();
+
+            TNVEDCode = await tNVEDCodeService.GetByIdAsync(id);
+
+            if (TNVEDCode.Id == 0)
+                return NotFound();
+
+            TNVEDCode.Id = 0;
+            TNVEDCode.Name = String.Empty;
+            TNVEDCode.Code = String.Empty;
+            var selectedTechRegs = TNVEDCode.TechRegs;
+            PopulateTechRegsDropDownList(techRegService, selectedTechRegs);
+
+            return Page();
+        }
+
         [BindProperty]
         public ManageDb.Models.TNVEDCode TNVEDCode { get; set; } = default!;
 

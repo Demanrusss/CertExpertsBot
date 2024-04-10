@@ -38,7 +38,8 @@
             <td class="col-md-2 text-end">
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a> |
+                <a asp-page="./Create" asp-route-id="@item.Id" asp-page-handler="CopyFrom">Copy</a>
             </td>
         </tr>
 }
