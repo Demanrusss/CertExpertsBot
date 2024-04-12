@@ -18,6 +18,21 @@ namespace ManageDb.Services
             return await dbContext.TNVEDCodes.ToListAsync();
         }
 
+        public async Task<ICollection<TNVEDCode>> GetAllAsync(int page, int pageSize)
+        {
+            if (page < 1 || pageSize < 10)
+                return await dbContext.TNVEDCodes
+                    .OrderByDescending(c => c.Code)
+                    .Take(10)
+                    .ToListAsync();
+
+            return await dbContext.TNVEDCodes
+                .OrderByDescending(c => c.Code)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<TNVEDCode>> GetByCodeAsync(string searchStr)
         {
             if (String.IsNullOrEmpty(searchStr))
@@ -76,6 +91,11 @@ namespace ManageDb.Services
             dbContext.TNVEDCodes.Remove(tNVEDCode);
 
             return await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountAsync()
+        {
+            return await dbContext.TNVEDCodes.CountAsync();
         }
     }
 }

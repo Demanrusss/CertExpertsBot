@@ -18,6 +18,21 @@ namespace ManageDb.Services
             return await dbContext.TechRegs.ToListAsync();
         }
 
+        public async Task<ICollection<TechReg>> GetAllAsync(int page, int pageSize)
+        {
+            if (page < 1 || pageSize < 10)
+                return await dbContext.TechRegs
+                    .OrderByDescending(tr => tr.Name)
+                    .Take(10)
+                    .ToListAsync();
+
+            return await dbContext.TechRegs
+                .OrderByDescending(tr => tr.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<TechReg> GetByIdAsync(int id)
         {
             var techReg = await dbContext.TechRegs.FirstOrDefaultAsync(tr => tr.Id == id);
@@ -72,6 +87,11 @@ namespace ManageDb.Services
             dbContext.TechRegs.Remove(techReg);
 
             return await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCountAsync()
+        {
+            return await dbContext.TechRegs.CountAsync();
         }
     }
 }

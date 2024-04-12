@@ -19,7 +19,7 @@ namespace ManageDb.Pages.Views.TNVEDCode
             ViewData["Title"] = "Index";
 
             if (tNVEDCodeService != null)
-                TNVEDCode = (await tNVEDCodeService.GetAllAsync()).OrderByDescending(c => c.Code).Take(10);
+                TNVEDCode = await tNVEDCodeService.GetAllAsync(1, 10);
         }
     }
 }

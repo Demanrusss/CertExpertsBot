@@ -21,7 +21,11 @@ namespace ManageDb.Pages
         {
             ViewData["Title"] = "Home page";
 
-            TNVEDCodes = await tNVEDCodeService.GetAllAsync();
+            var countTask = tNVEDCodeService.GetCountAsync();
+            var allRecordsTask = tNVEDCodeService.GetAllAsync(1, 100);
+
+            ViewData["RecordsQuantity"] = await countTask;
+            TNVEDCodes = await allRecordsTask;
         }
     }
 }
