@@ -16,7 +16,7 @@ namespace ManageDb.Pages.Views.TechReg
 
         public async Task OnGetAsync()
         {
-            ViewData["Title"] = "Index";
+            ViewData["Title"] = "Тех. регламенты / Решения";
 
             if (techRegService != null)
                 TechRegs = await techRegService.GetAllAsync();

@@ -2,6 +2,7 @@
 {
     public interface ITNVEDCodeService<T> : IService<T>
     {
-        public Task<ICollection<T>> GetByCodeAsync(string searchStr);
+        Task<ICollection<T>> GetByCodeAsync(string searchStr);
+        Task<ICollection<T>> GetAllWithTechRegsAsync(int page, int pageSize);
     }
 }

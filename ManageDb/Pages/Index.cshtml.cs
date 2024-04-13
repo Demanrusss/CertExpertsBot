@@ -20,9 +20,22 @@ namespace ManageDb.Pages
         public async Task OnGet()
         {
             ViewData["Title"] = "Home page";
+            ViewData["PageSize"] = 100;
 
             var countTask = tNVEDCodeService.GetCountAsync();
             var allRecordsTask = tNVEDCodeService.GetAllAsync(1, 100);
+
+            ViewData["RecordsQuantity"] = await countTask;
+            TNVEDCodes = await allRecordsTask;
+        }
+
+        public async Task OnGetMoreOnPageAsync(int pageSize)
+        {
+            ViewData["Title"] = "Home page";
+            ViewData["PageSize"] = pageSize;
+
+            var countTask = tNVEDCodeService.GetCountAsync();
+            var allRecordsTask = tNVEDCodeService.GetAllAsync(1, pageSize);
 
             ViewData["RecordsQuantity"] = await countTask;
             TNVEDCodes = await allRecordsTask;

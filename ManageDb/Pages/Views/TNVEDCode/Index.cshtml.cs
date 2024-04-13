@@ -16,10 +16,20 @@ namespace ManageDb.Pages.Views.TNVEDCode
 
         public async Task OnGetAsync()
         {
-            ViewData["Title"] = "Index";
+            ViewData["Title"] = "Коды ТН ВЭД";
+            ViewData["PageSize"] = 10;
 
             if (tNVEDCodeService != null)
-                TNVEDCode = await tNVEDCodeService.GetAllAsync(1, 10);
+                TNVEDCode = await tNVEDCodeService.GetAllWithTechRegsAsync(1, 10);
+        }
+
+        public async Task OnGetMoreOnPageAsync(int pageSize)
+        {
+            ViewData["Title"] = "Коды ТН ВЭД";
+            ViewData["PageSize"] = pageSize;
+
+            if (tNVEDCodeService != null)
+                TNVEDCode = await tNVEDCodeService.GetAllWithTechRegsAsync(1, pageSize);
         }
     }
 }

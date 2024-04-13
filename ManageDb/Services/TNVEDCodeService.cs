@@ -15,21 +15,62 @@ namespace ManageDb.Services
 
         public async Task<ICollection<TNVEDCode>> GetAllAsync()
         {
-            return await dbContext.TNVEDCodes.ToListAsync();
+            return await dbContext.TNVEDCodes
+                .OrderByDescending(c => c.Code)
+                .Take(10)
+                .ToListAsync();
         }
 
         public async Task<ICollection<TNVEDCode>> GetAllAsync(int page, int pageSize)
         {
-            if (page < 1 || pageSize < 10)
-                return await dbContext.TNVEDCodes
-                    .OrderByDescending(c => c.Code)
-                    .Take(10)
-                    .ToListAsync();
+            if (page < 1 || pageSize < 10 || pageSize > 100)
+                return await GetAllAsync();
 
             return await dbContext.TNVEDCodes
                 .OrderByDescending(c => c.Code)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .ToListAsync();
+        }
+
+        private async Task<ICollection<TNVEDCode>> GetAllWithTechRegsAsync()
+        {
+            return await dbContext.TNVEDCodes
+                .Include(c => c.TechRegs)
+                .OrderByDescending(c => c.Code)
+                .Take(10)
+                .Select(c => new TNVEDCode
+                {
+                    Id = c.Id,
+                    Code = c.Code,
+                    Name = c.Name,
+                    TechRegs = c.TechRegs.Select(tr => new TechReg
+                    {
+                        Name = tr.Name
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<TNVEDCode>> GetAllWithTechRegsAsync(int page, int pageSize)
+        {
+            if (page < 1 || pageSize < 10 || pageSize > 100)
+                return await GetAllWithTechRegsAsync();
+
+            return await dbContext.TNVEDCodes
+                .OrderByDescending(c => c.Code)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new TNVEDCode
+                {
+                    Id = c.Id,
+                    Code = c.Code,
+                    Name = c.Name,
+                    TechRegs = c.TechRegs.Select(tr => new TechReg
+                    {
+                        Name = tr.Name
+                    }).ToList()
+                })
                 .ToListAsync();
         }
 

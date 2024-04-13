@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @model IndexModel
 
 <div class="text-center">
@@ -8,17 +8,17 @@
     <div class="col-2 col">
         <text>Filters</text>
     </div>
-    <div class="col-7 text-end">Показать</div>
-    <div class="col-1 text-start">
-        <select>
+    <div class="col text-center">
+        <h6><b>Всего записей: @ViewBag.RecordsQuantity</b></h6>
+    </div>
+    <div class="col-1 text-end">Показать</div>
+    <div class="col-1 text-end">
+        <select onchange="gotoUrl(this)">
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="100">100</option>
         </select>
-    </div>
-    <div class="col-2 text-end">
-        <h6>Всего записей: @ViewBag.RecordsQuantity</h6>
     </div>
 </div>
 <div class="row">
@@ -34,8 +34,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="col-2" scope="col">Code</th>
-                    <th scope="col">Name</th>
+                    <th class="col-2" scope="col">Код ТН ВЭД</th>
+                    <th scope="col">Наименование</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,3 +51,15 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            document.getElementsByTagName('select')[0].value = @ViewData["PageSize"];
+        });
+
+        function gotoUrl(element) {
+            window.location.href = `/MoreOnPage?pageSize=${element.value}`;
+        };
+    </script>
+}
