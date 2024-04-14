@@ -23,8 +23,8 @@
                 <label asp-for="TNVEDCode.TechRegs" class="control-label"></label>
                 @if (Model.TNVEDCode != null)
                 {
-                    <select class="form-control" size="@(Model.TechRegNameMSL.Count() + Model.TNVEDCode.TechRegs.Count)" name="TNVEDCode_TechRegs" asp-for="TNVEDCode.TechRegs" asp-items="Model.TechRegNameMSL" multiple>
-                    @foreach (var techReg in Model.TNVEDCode.TechRegs)
+                    <select size="@(Model.TechRegNameMSL.Count() + Model.TNVEDCode.TechRegs.Count)" name="TNVEDCode_TechRegs" asp-for="TNVEDCode.TechRegs" asp-items="Model.TechRegNameMSL" multiple>
+                    @foreach (var techReg in Model.TNVEDCode.TechRegs!)
                     {
                         <option value="@techReg.Id" selected>@techReg.Name</option>
                     }
@@ -32,7 +32,7 @@
                 }
                 else
                 {
-                    <select class="form-control" size="@Model.TechRegNameMSL.Count()" name="TNVEDCode_TechRegs" asp-for="TNVEDCode.TechRegs" asp-items="Model.TechRegNameMSL" multiple>
+                    <select size="@Model.TechRegNameMSL.Count()" name="TNVEDCode_TechRegs" asp-for="TNVEDCode.TechRegs" asp-items="Model.TechRegNameMSL" multiple>
                     </select>
                 }
                 <span asp-validation-for="TNVEDCode.TechRegs" class="text-danger"></span>
