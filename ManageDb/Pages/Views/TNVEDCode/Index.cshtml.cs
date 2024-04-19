@@ -31,5 +31,13 @@ namespace ManageDb.Pages.Views.TNVEDCode
             if (tNVEDCodeService != null)
                 TNVEDCode = await tNVEDCodeService.GetAllWithTechRegsAsync(1, pageSize);
         }
+
+        public async Task OnGetSearchResultsAsync(string searchCode)
+        {
+            ViewData["Title"] = "Коды ТН ВЭД";
+            ViewData["PageSize"] = 100;
+
+            TNVEDCode = await tNVEDCodeService.GetByCodeWithTechRegsAsync(searchCode);
+        }
     }
 }

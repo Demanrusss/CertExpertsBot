@@ -44,7 +44,7 @@ namespace ManageDb.Services
                     Id = c.Id,
                     Code = c.Code,
                     Name = c.Name,
-                    TechRegs = c.TechRegs.Select(tr => new TechReg
+                    TechRegs = c.TechRegs!.Select(tr => new TechReg
                     {
                         Name = tr.Name
                     }).ToList()
@@ -66,7 +66,7 @@ namespace ManageDb.Services
                     Id = c.Id,
                     Code = c.Code,
                     Name = c.Name,
-                    TechRegs = c.TechRegs.Select(tr => new TechReg
+                    TechRegs = c.TechRegs!.Select(tr => new TechReg
                     {
                         Name = tr.Name
                     }).ToList()
@@ -79,7 +79,32 @@ namespace ManageDb.Services
             if (String.IsNullOrEmpty(searchStr))
                 return await GetAllAsync();
 
-            return await dbContext.TNVEDCodes.Where(c => c.Code.Contains(searchStr)).ToListAsync();
+            return await dbContext.TNVEDCodes
+                .Where(c => c.Code.Contains(searchStr))
+                .Take(100)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<TNVEDCode>> GetByCodeWithTechRegsAsync(string searchStr)
+        {
+            if (String.IsNullOrEmpty(searchStr))
+                return await GetAllWithTechRegsAsync();
+
+            return await dbContext.TNVEDCodes
+                .Where(c => c.Code.Contains(searchStr))
+                .OrderByDescending(c => c.Code)
+                .Take(100)
+                .Select(c => new TNVEDCode
+                {
+                    Id = c.Id,
+                    Code = c.Code,
+                    Name = c.Name,
+                    TechRegs = c.TechRegs!.Select(tr => new TechReg
+                    {
+                        Name = tr.Name
+                    }).ToList()
+                })
+                .ToListAsync();
         }
 
         public async Task<TNVEDCode> GetByIdAsync(int id)

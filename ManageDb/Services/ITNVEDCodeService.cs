@@ -4,5 +4,6 @@
     {
         Task<ICollection<T>> GetByCodeAsync(string searchStr);
         Task<ICollection<T>> GetAllWithTechRegsAsync(int page, int pageSize);
+        Task<ICollection<T>> GetByCodeWithTechRegsAsync(string searchStr);
     }
 }

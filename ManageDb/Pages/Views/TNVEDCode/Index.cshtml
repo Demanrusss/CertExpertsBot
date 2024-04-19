@@ -17,6 +17,14 @@
         </select>
     </div>
 </div>
+<div class="row">
+    <div class="col-1 col">
+        <input type="search" placeholder="Enter code" onchange="gotoSearchUrl(this)" />
+    </div>
+    <div class="col">
+        <input type="search" placeholder="Enter name" class="col-12" />
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -37,7 +45,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-            @foreach (var techReg in item.TechRegs)
+            @foreach (var techReg in item.TechRegs!)
             {
                 @Html.DisplayFor(modelTechReg => techReg.Name)<br />
             }
@@ -61,6 +69,13 @@
 
         function gotoUrl(element) {
             window.location.href = `/TNVEDCode/MoreOnPage?pageSize=${element.value}`;
+        };
+
+        function gotoSearchUrl(element) {
+            let searchCode = element.value.trim();
+            if (searchCode != '' && searchCode.length <= 10) {
+                window.location.href = `/TNVEDCode/SearchResults?searchCode=${searchCode}`;
+            }
         };
     </script>
 }

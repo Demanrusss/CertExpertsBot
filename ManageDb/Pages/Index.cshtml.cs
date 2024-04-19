@@ -1,6 +1,7 @@
 ﻿using ManageDb.Models;
 using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Drawing.Printing;
 
 namespace ManageDb.Pages
 {
@@ -13,8 +14,8 @@ namespace ManageDb.Pages
 
         public IndexModel(ILogger<IndexModel> logger, ITNVEDCodeService<TNVEDCode> tNVEDCodeService)
         {
-            this.logger = logger!;
-            this.tNVEDCodeService = tNVEDCodeService!;
+            this.logger = logger;
+            this.tNVEDCodeService = tNVEDCodeService;
         }
 
         public async Task OnGet()
@@ -39,6 +40,18 @@ namespace ManageDb.Pages
 
             ViewData["RecordsQuantity"] = await countTask;
             TNVEDCodes = await allRecordsTask;
+        }
+
+        public async Task OnGetSearchResultsAsync(string searchCode)
+        {
+            ViewData["Title"] = "Home page";
+            ViewData["PageSize"] = 100;
+
+            var countTask = tNVEDCodeService.GetCountAsync();
+            var foundRecordsTask = tNVEDCodeService.GetByCodeAsync(searchCode);
+
+            ViewData["RecordsQuantity"] = await countTask;
+            TNVEDCodes = await foundRecordsTask;
         }
     }
 }
