@@ -2,6 +2,7 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CertExpertsBot
 {
@@ -22,12 +23,14 @@ namespace CertExpertsBot
                         var response = MessageHandler.Response(message);
                         if (!String.IsNullOrWhiteSpace(response))
                         {
-                            if (response.Contains("Запустил обработчик кодов ТНВЭД"))
-                                ;//TODO: Что-то хотел с этим сделать;
-                              
-                            await botClient.SendTextMessageAsync(message.Chat, response);
-                        }    
-                            
+                            var keyBtns = new List<KeyboardButton>();
+                            for (int i = 0; i <= 9; i++)
+                                keyBtns.Add(new KeyboardButton(i.ToString()));
+                            var replyKeyBoard = new ReplyKeyboardMarkup(keyBtns);
+                            replyKeyBoard.ResizeKeyboard = true;
+
+                            await botClient.SendTextMessageAsync(message.Chat, response, replyMarkup: replyKeyBoard);
+                        }
                     }
                     return;
                 default:
@@ -36,11 +39,11 @@ namespace CertExpertsBot
             }
         }
 
-        public static Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
+        public static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
             Exception exception, CancellationToken cancellationToken)
         {
             Console.Error.WriteLine(exception);
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }

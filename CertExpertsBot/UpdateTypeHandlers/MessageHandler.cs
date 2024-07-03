@@ -65,7 +65,7 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnCommand_TNVED()
         {
-            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (#xxxxxxxxxx)";
+            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (#xxxxxxxxxx)"; 
         }
 
         private static string ResponseOnOtherText()

@@ -9,8 +9,9 @@ namespace CertExpertsBot
 {
     class Program
     {
-        private static readonly AppSettings settings = JsonConvert.DeserializeObject<AppSettings>(System.IO.File.ReadAllText("appsettings.json"))!;
-        static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
+        private static readonly AppSettings settings = JsonConvert
+            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText("appsettings.json"))!;
+        private static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
 
         static void Main(string[] args)
         {
@@ -45,14 +46,16 @@ namespace CertExpertsBot
             return receiverOptions;
         }
 
-        public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        public static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
+            Update update, CancellationToken cancellationToken)
         {
             await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
         }
 
-        public static Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        public static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
+            Exception exception, CancellationToken cancellationToken)
         {
-            return UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
+            await UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
         }
     }
 }
