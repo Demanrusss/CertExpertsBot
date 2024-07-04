@@ -19,7 +19,7 @@ namespace CertExpertsBot.UpdateTypeHandlers
             if (message.Text.StartsWith('/'))
                 return ResponseOnCommand(message);
 
-            if (message.Text.StartsWith('#'))
+            if (message.Text.StartsWith('.'))
             {
                 string code = message.Text.Length > 1 ? message.Text.Substring(1) : String.Empty;
                 return ResponseOnTNVED(code);
@@ -65,17 +65,23 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnCommand_TNVED()
         {
-            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (#xxxxxxxxxx)"; 
+            return "Запустил обработчик кодов ТНВЭД\nМожете вводить код ТН ВЭД (.xxxxxxxxxx)";
         }
 
         private static string ResponseOnOtherText()
         {
-            return "Пока еще не знаю, что ответить";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Пока еще не знаю, что ответить.\n");
+            sb.AppendLine("Вы можете связаться с компанией \"Консалтинг+\"");
+            sb.AppendLine("Email: deman.russs@mail.ru");
+            sb.AppendLine("WA: +7-708-434-30-60");
+
+            return sb.ToString();
         }
 
         private static string ResponseOnTNVED(string code)
         {
-            if (String.IsNullOrWhiteSpace(code) || code.Length != 10)
+            if (code == null || code.Length != 10)
                 return "Нужно указать полный код ТН ВЭД (10 цифр)";
 
             var tnved = dbContext.TNVEDCodes

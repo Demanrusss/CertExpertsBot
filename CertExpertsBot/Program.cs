@@ -1,4 +1,5 @@
 ﻿using CertExpertsBot.Models;
+using Microsoft.Data.Sqlite;
 using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -15,9 +16,43 @@ namespace CertExpertsBot
 
         static void Main(string[] args)
         {
+            using (var memConnection = new SqliteConnection(settings!.ConnectionStrings["MemoryConnection"]))
+            {
+                memConnection.Open();
+                UploadDbToMemory(memConnection);
+
+                StartBot();
+
+                memConnection.Close();
+            }
+        }
+
+        private static void UploadDbToMemory(SqliteConnection connection)
+        {
+            string dataSource = settings!.ConnectionStrings["DefaultConnection"].Split(';')[0];
+            string dbName = dataSource.Split('=')[1];
+
+            var command = connection.CreateCommand();
+            command.CommandText = String.Format("ATTACH '{0}' AS disk;", dbName);
+            command.ExecuteNonQuery();
+
+            command.CommandText = @"CREATE TABLE TechRegs
+                                    AS SELECT * FROM disk.TechRegs;
+                                        
+                                    CREATE TABLE TNVEDCodes 
+                                    AS SELECT * FROM disk.TNVEDCodes;
+                                        
+                                    CREATE TABLE TNVEDCodeTechReg 
+                                    AS SELECT * FROM disk.TNVEDCodeTechReg";
+            command.ExecuteNonQuery();
+        }
+
+        private static void StartBot()
+        {
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
             var receiverOptions = CreateReceiverOptions();
+
             bot.StartReceiving(
                 HandleUpdateAsync,
                 HandlePollingErrorAsync,
@@ -46,13 +81,13 @@ namespace CertExpertsBot
             return receiverOptions;
         }
 
-        public static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
+        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
             Update update, CancellationToken cancellationToken)
         {
             await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
         }
 
-        public static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
+        private static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
             Exception exception, CancellationToken cancellationToken)
         {
             await UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);

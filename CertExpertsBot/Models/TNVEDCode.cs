@@ -10,8 +10,10 @@
         public override string ToString()
         {
             string techRegsStr = String.Join("\n", TechRegs);
+            if (techRegsStr.Length == 0)
+                techRegsStr = "Скорее всего таможня сертификаты требовать не будет";
 
-            return String.Format("{0}\n{1}\n{2}", Code, Name, techRegsStr);
+            return String.Format("{0}\n\nОписание\n{1}\n\nМеры\n{2}", Code, Name, techRegsStr);
         }
     }
 }

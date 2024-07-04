@@ -2,7 +2,6 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CertExpertsBot
 {
@@ -11,31 +10,22 @@ namespace CertExpertsBot
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
             Update update, CancellationToken cancellationToken)
         {
-            if (botClient == null || update == null)
+            if (botClient == null || update == null || update.Message == null)
                 return;
+
+            var message = update.Message;
 
             switch (update.Type)
             {
                 case UpdateType.Message:
-                    var message = update.Message;
-                    if (message != null)
-                    {
-                        var response = MessageHandler.Response(message);
-                        if (!String.IsNullOrWhiteSpace(response))
-                        {
-                            var keyBtns = new List<KeyboardButton>();
-                            for (int i = 0; i <= 9; i++)
-                                keyBtns.Add(new KeyboardButton(i.ToString()));
-                            var replyKeyBoard = new ReplyKeyboardMarkup(keyBtns);
-                            replyKeyBoard.ResizeKeyboard = true;
-
-                            await botClient.SendTextMessageAsync(message.Chat, response, replyMarkup: replyKeyBoard);
-                        }
-                    }
-                    return;
+                    var response = MessageHandler.Response(message);                        
+                    await botClient.SendTextMessageAsync(chatId: message.Chat, 
+                                                         text: response, 
+                                                         cancellationToken: cancellationToken);
+                    break;
                 default:
                     Console.WriteLine("New Type was found. " + update.Type.ToString());
-                    return;
+                    break;
             }
         }
 

@@ -17,7 +17,7 @@ namespace CertExpertsBot.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var settings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText("./appsettings.json"));
-            optionsBuilder.UseSqlite(settings!.ConnectionStrings["DefaultConnection"]);
+            optionsBuilder.UseSqlite(settings!.ConnectionStrings["MemoryConnection"]);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
