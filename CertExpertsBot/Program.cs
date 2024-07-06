@@ -11,7 +11,7 @@ namespace CertExpertsBot
     class Program
     {
         private static readonly AppSettings settings = JsonConvert
-            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText("appsettings.json"))!;
+            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json")))!;
         private static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
 
         static void Main(string[] args)

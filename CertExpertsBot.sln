@@ -20,7 +20,6 @@ Global
 		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FBA248D-51CA-42BA-B579-0CFDEC33578C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
