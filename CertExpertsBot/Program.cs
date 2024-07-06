@@ -10,8 +10,11 @@ namespace CertExpertsBot
 {
     class Program
     {
+        private static readonly string executableLocation = 
+            Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()!.Location)!;
+        private static readonly string appSettingsPath = Path.Combine(executableLocation, "appsettings.json");
         private static readonly AppSettings settings = JsonConvert
-            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json")))!;
+            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(appSettingsPath))!;
         private static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
 
         static void Main(string[] args)
