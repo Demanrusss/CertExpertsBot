@@ -2,6 +2,9 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
 WORKDIR /app
 
+COPY appsettings.json /app
+COPY TNVEDBotDb.db /app
+
 COPY *.csproj ./
 RUN dotnet restore
 
