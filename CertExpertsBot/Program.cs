@@ -75,7 +75,8 @@ namespace CertExpertsBot
 
             var allowedUpdates = new UpdateType[]
             {
-                UpdateType.Message
+                UpdateType.Message,
+                UpdateType.CallbackQuery
             };
 
             receiverOptions.AllowedUpdates = allowedUpdates;
@@ -90,7 +91,7 @@ namespace CertExpertsBot
             await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
         }
 
-        private static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
+        private static async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
             Exception exception, CancellationToken cancellationToken)
         {
             await UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
