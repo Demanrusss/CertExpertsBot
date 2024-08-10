@@ -1,6 +1,8 @@
 ﻿using CertExpertsBot.Data;
+using CertExpertsBot.UpdateTypeHandlers.Managers;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace CertExpertsBot.UpdateTypeHandlers
@@ -9,7 +11,30 @@ namespace CertExpertsBot.UpdateTypeHandlers
     {
         private static readonly AppDbContext dbContext = new AppDbContext();
 
-        public static string Response(Message message)
+        public static async Task HandleMessageAsync(ITelegramBotClient botClient, Message? message,
+            CancellationToken cancellationToken)
+        {
+            if (message == null)
+                return;
+            string response = MessageHandler.Response(message);
+            if (response.Contains("Обработчик кодов ТНВЭД"))
+            {
+                await botClient.SendTextMessageAsync(chatId: message.Chat,
+                text: response,
+                                                     cancellationToken: cancellationToken);
+                var replyMarkupDefault = ReplyMarkupManager.ReplyMarkupKB_AllNumbers();
+                await botClient.SendTextMessageAsync(chatId: message.Chat,
+                                                     text: ".",
+                replyMarkup: replyMarkupDefault,
+                                                     cancellationToken: cancellationToken);
+            }
+            else
+                await botClient.SendTextMessageAsync(chatId: message.Chat,
+                                                     text: response,
+                                                     cancellationToken: cancellationToken);
+        }
+
+        private static string Response(Message message)
         {
             if (message == null || String.IsNullOrWhiteSpace(message.Text))
                 return "Странно, но пришло пустое сообщение";

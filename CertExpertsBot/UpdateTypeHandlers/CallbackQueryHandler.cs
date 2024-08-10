@@ -1,17 +1,16 @@
-﻿using CertExpertsBot.Data;
+﻿using CertExpertsBot.UpdateTypeHandlers.Managers;
+using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CertExpertsBot.UpdateTypeHandlers
 {
     public static class CallbackQueryHandler
     {
-        private static readonly AppDbContext dbContext = new AppDbContext();
-
-        public static InlineKeyboardMarkup ReplyMarkup_Numbers(CallbackQuery callbackQuery)
+        public static async Task HandleCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery? callbackQuery,
+            CancellationToken cancellationToken)
         {
-            if (callbackQuery.Message == null || callbackQuery.Message.Text == null)
-                return ReplyMarkupKB_AllNumbers();
+            if (callbackQuery == null || callbackQuery.Message == null || callbackQuery.Message.Text == null)
+                return;
 
             switch (callbackQuery.Data)
             {
@@ -25,55 +24,32 @@ namespace CertExpertsBot.UpdateTypeHandlers
                 case "7":
                 case "8":
                 case "9":
-                    var partCode = callbackQuery.Message.Text.Substring(1) + callbackQuery.Data;
-                    var availableNumbers = AvailableNumbers(partCode);
-                    return ReplyMarkupKB_AvailableNumbers(availableNumbers);
+                    var text = callbackQuery.Message.Text + callbackQuery.Data;
+                    callbackQuery.Message.Text = text;
+                    var replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(text);
+                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
+                                                         callbackQuery.Message.MessageId,
+                                                         text,
+                                                         replyMarkup: replyMarkup);
+                    if (text.Length == 11)
+                        await MessageHandler.HandleMessageAsync(botClient, callbackQuery.Message, cancellationToken);
+                    return;
+                case "removeNumber":
+                    text = callbackQuery.Message.Text;
+                    if (text.Length == 1)
+                        return;
+                    
+                    callbackQuery.Message.Text = text.Substring(0, text.Length - 1);
+                    replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(callbackQuery.Message.Text);
+                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
+                                                         callbackQuery.Message.MessageId,
+                                                         callbackQuery.Message.Text,
+                                                         replyMarkup: replyMarkup);
+                    return;
                 default:
-                    return ReplyMarkupKB_AllNumbers();
+                    Console.WriteLine($"{callbackQuery.Data} not implemented");
+                    return;
             }
-        }
-
-        private static IList<string> AvailableNumbers(string partCode)
-        {
-            var availableNumbers = new List<string>();
-
-            bool newPartCodeExists;
-            for (int i = 0; i <= 9; i++)
-            {
-                newPartCodeExists = dbContext.TNVEDCodes.Any(c => c.Code.StartsWith(partCode + i.ToString()));
-                if (newPartCodeExists)
-                    availableNumbers.Add(i.ToString());
-            }
-
-            return availableNumbers;
-        }
-
-        private static InlineKeyboardMarkup ReplyMarkupKB_AvailableNumbers(IList<string> availableNumbers)
-        {
-            var keyBoard = new List<List<InlineKeyboardButton>>();
-
-            var row1 = new List<InlineKeyboardButton>();
-            var row2 = new List<InlineKeyboardButton>();
-            for (int i = 0; i < availableNumbers.Count; i++)
-            {
-                if (i <= 4)
-                    row1.Add(InlineKeyboardButton.WithCallbackData(availableNumbers[i], availableNumbers[i]));
-                else
-                    row2.Add(InlineKeyboardButton.WithCallbackData(availableNumbers[i], availableNumbers[i]));
-            }
-
-            keyBoard.Add(row1);
-            if (row2.Count > 0)
-                keyBoard.Add(row2);
-
-            return new InlineKeyboardMarkup(keyBoard);
-        }
-
-        public static InlineKeyboardMarkup ReplyMarkupKB_AllNumbers()
-        {
-            var allNumbers = new List<string>() { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
-            return ReplyMarkupKB_AvailableNumbers(allNumbers);
         }
     }
 }
