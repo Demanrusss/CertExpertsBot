@@ -65,8 +65,9 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnCommand_TNVED()
         {
-            return "Обработчик кодов ТНВЭД запущен. \n" + 
-                "Можете вводить 10-ти значный код ТН ВЭД через точку (например, .0123456789)";
+            return "Обработчик кодов ТНВЭД запущен.\n" + 
+                "Можете вводить 10-ти значный код ТН ВЭД через точку (например, .0123456789)\n" + 
+                "либо использовать кнопки ниже";
         }
 
         private static string ResponseOnOtherText()
