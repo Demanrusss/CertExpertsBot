@@ -59,13 +59,24 @@ namespace CertExpertsBot.UpdateTypeHandlers
             {
                 case "/help":
                     return ResponseOnCommand_Help();
-
                 case "/start":
                     return ResponseOnCommand_Start(message);
-
                 case "/tnved":
                     return ResponseOnCommand_TNVED();
-                
+                case "/codes_quantity":
+                    return ResponseOnCommand_CodesQuantity();
+                case "/techdocs_list_p1":
+                    return ResponseOnCommand_TechDocsList(1);
+                case "/techdocs_list_p2":
+                    return ResponseOnCommand_TechDocsList(2);
+                case "/techdocs_list_p3":
+                    return ResponseOnCommand_TechDocsList(3);
+                case "/techdocs_list_p4":
+                    return ResponseOnCommand_TechDocsList(4);
+                case "/techdocs_list_p5":
+                    return ResponseOnCommand_TechDocsList(5);
+                case "/techdocs_list_p6":
+                    return ResponseOnCommand_TechDocsList(6);
                 default:
                     return "Такой команды нет";
             }
@@ -84,6 +95,13 @@ namespace CertExpertsBot.UpdateTypeHandlers
             sb.AppendLine("/help - помощь по командам");
             sb.AppendLine("/start - начать работу с ботом");
             sb.AppendLine("/tnved - справочник кодов ТНВЭД");
+            sb.AppendLine("/codes_quantity - количество кодов ТН ВЭД");
+            sb.AppendLine("/techdocs_list_p1 - список тех.док-ов (стр.1)");
+            sb.AppendLine("/techdocs_list_p2 - список тех.док-ов (стр.2)");
+            sb.AppendLine("/techdocs_list_p3 - список тех.док-ов (стр.3)");
+            sb.AppendLine("/techdocs_list_p4 - список тех.док-ов (стр.4)");
+            sb.AppendLine("/techdocs_list_p5 - список тех.док-ов (стр.5)");
+            sb.AppendLine("/techdocs_list_p6 - список тех.док-ов (стр.6)");
 
             return sb.ToString();
         }
@@ -93,6 +111,23 @@ namespace CertExpertsBot.UpdateTypeHandlers
             return "Обработчик кодов ТНВЭД запущен.\n" + 
                 "Можете вводить 10-ти значный код ТН ВЭД через точку (например, .0123456789)\n" + 
                 "либо использовать кнопки ниже";
+        }
+
+        private static string ResponseOnCommand_CodesQuantity()
+        {
+            var quantity = dbContext.TNVEDCodes.Count();
+            return $"Всего кодов ТН ВЭД в базе: {quantity}";
+        }
+
+        private static string ResponseOnCommand_TechDocsList(int page)
+        {
+            int skipResultsQuantity = (page - 1) * 10;
+            var techRegs = dbContext.TechRegs
+                .OrderBy(tr => tr.Name)
+                .Select(tr => tr.Name)
+                .Skip(skipResultsQuantity)
+                .Take(10);
+            return $"Список тех. документов (стр. {page}):\n{String.Join("\n\n", techRegs)}";
         }
 
         private static string ResponseOnOtherText()
