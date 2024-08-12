@@ -15,7 +15,6 @@ namespace CertExpertsBot
         private static readonly string appSettingsPath = Path.Combine(executableLocation, "appsettings.json");
         private static readonly AppSettings settings = JsonConvert
             .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(appSettingsPath))!;
-        private static ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
 
         static void Main(string[] args)
         {
@@ -52,6 +51,8 @@ namespace CertExpertsBot
 
         private static void StartBot()
         {
+            ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
+
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
             var receiverOptions = CreateReceiverOptions();
