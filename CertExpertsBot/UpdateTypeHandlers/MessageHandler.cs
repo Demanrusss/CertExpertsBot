@@ -9,14 +9,14 @@ namespace CertExpertsBot.UpdateTypeHandlers
 {
     public static class MessageHandler
     {
-        private static readonly AppDbContext dbContext = new AppDbContext();
+        private static readonly AppDbContext DbContext = new();
 
         public static async Task HandleMessageAsync(ITelegramBotClient botClient, Message? message,
             CancellationToken cancellationToken)
         {
             if (message == null)
                 return;
-            string response = MessageHandler.Response(message);
+            var response = Response(message);
             if (response.Contains("Обработчик кодов ТНВЭД"))
             {
                 await botClient.SendTextMessageAsync(chatId: message.Chat,
@@ -34,57 +34,42 @@ namespace CertExpertsBot.UpdateTypeHandlers
                                                      cancellationToken: cancellationToken);
         }
 
-        private static string Response(Message message)
+        private static string Response(Message? message)
         {
             if (message == null || String.IsNullOrWhiteSpace(message.Text))
                 return "Странно, но пришло пустое сообщение";
 
-            string text = message.Text.Trim();
-
             if (message.Text.StartsWith('/'))
                 return ResponseOnCommand(message);
 
-            if (message.Text.StartsWith('.'))
-            {
-                string code = message.Text.Length > 1 ? message.Text.Substring(1) : String.Empty;
-                return ResponseOnTNVED(code);
-            }
-            else
+            if (!message.Text.StartsWith('.'))
                 return ResponseOnOtherText();
+            
+            var code = message.Text.Length > 1 ? message.Text[1..] : String.Empty;
+            return ResponseOnTNVED(code);
         }
 
         private static string ResponseOnCommand(Message message)
         {
-            switch (message.Text)
+            return message.Text switch
             {
-                case "/help":
-                    return ResponseOnCommand_Help();
-                case "/start":
-                    return ResponseOnCommand_Start(message);
-                case "/tnved":
-                    return ResponseOnCommand_TNVED();
-                case "/codes_quantity":
-                    return ResponseOnCommand_CodesQuantity();
-                case "/techdocs_list_p1":
-                    return ResponseOnCommand_TechDocsList(1);
-                case "/techdocs_list_p2":
-                    return ResponseOnCommand_TechDocsList(2);
-                case "/techdocs_list_p3":
-                    return ResponseOnCommand_TechDocsList(3);
-                case "/techdocs_list_p4":
-                    return ResponseOnCommand_TechDocsList(4);
-                case "/techdocs_list_p5":
-                    return ResponseOnCommand_TechDocsList(5);
-                case "/techdocs_list_p6":
-                    return ResponseOnCommand_TechDocsList(6);
-                default:
-                    return "Такой команды нет";
-            }
+                "/help" => ResponseOnCommand_Help(),
+                "/start" => ResponseOnCommand_Start(message),
+                "/tnved" => ResponseOnCommand_TNVED(),
+                "/codes_quantity" => ResponseOnCommand_CodesQuantity(),
+                "/techdocs_list_p1" => ResponseOnCommand_TechDocsList(1),
+                "/techdocs_list_p2" => ResponseOnCommand_TechDocsList(2),
+                "/techdocs_list_p3" => ResponseOnCommand_TechDocsList(3),
+                "/techdocs_list_p4" => ResponseOnCommand_TechDocsList(4),
+                "/techdocs_list_p5" => ResponseOnCommand_TechDocsList(5),
+                "/techdocs_list_p6" => ResponseOnCommand_TechDocsList(6),
+                _ => "Такой команды нет"
+            };
         }
 
         private static string ResponseOnCommand_Start(Message message)
         {
-            string userFirstName = message.From?.FirstName ?? "пользователь";
+            var userFirstName = message.From?.FirstName ?? "пользователь";
             return $"Приветствую, {userFirstName}!\nПомощь по командам - /help";
         }
 
@@ -115,14 +100,14 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnCommand_CodesQuantity()
         {
-            var quantity = dbContext.TNVEDCodes.Count();
+            var quantity = DbContext.TNVEDCodes.Count();
             return $"Всего кодов ТН ВЭД в базе: {quantity}";
         }
 
         private static string ResponseOnCommand_TechDocsList(int page)
         {
-            int skipResultsQuantity = (page - 1) * 10;
-            var techRegs = dbContext.TechRegs
+            var skipResultsQuantity = (page - 1) * 10;
+            var techRegs = DbContext.TechRegs
                 .OrderBy(tr => tr.Name)
                 .Select(tr => tr.Name)
                 .Skip(skipResultsQuantity)
@@ -132,21 +117,25 @@ namespace CertExpertsBot.UpdateTypeHandlers
 
         private static string ResponseOnOtherText()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine("Пока еще не знаю, что ответить.\n");
             sb.AppendLine("Вы можете связаться с компанией \"Консалтинг+\"");
             sb.AppendLine("Email: deman.russs@mail.ru");
             sb.AppendLine("WA: +7-708-434-30-60");
+            sb.AppendLine();
+            sb.AppendLine("А также можете поддержать проект");
+            sb.AppendLine("(на кофе моему разработчику):");
+            sb.AppendLine("номер карты: 4400 4303 6829 7278");
 
             return sb.ToString();
         }
 
         private static string ResponseOnTNVED(string code)
         {
-            if (code == null || code.Length != 10)
+            if (code is not { Length: 10 })
                 return "Нужно указать полный код ТН ВЭД (10 цифр)";
 
-            var tnved = dbContext.TNVEDCodes
+            var tnved = DbContext.TNVEDCodes
                 .Include(c => c.TechRegs)
                 .FirstOrDefault(c => c.Code == code);
 

@@ -6,13 +6,8 @@ namespace CertExpertsBot.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<TechReg> TechRegs { get; set; } = null!;
+        public DbSet<TechReg> TechRegs { get; set; }
         public DbSet<TNVEDCode> TNVEDCodes { get; set; }
-
-        public AppDbContext()
-        {
-            
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,19 +1,19 @@
 ﻿namespace CertExpertsBot.Models
 {
-    public class TNVEDCode
+    public record TNVEDCode
     {
-        public int Id { get; set; }
-        public string Code { get; set; } = null!;
-        public string Name { get; set; } = null!;
-        public virtual ICollection<TechReg> TechRegs { get; set; } = new HashSet<TechReg>();
+        public int Id { get; init; }
+        public required string Code { get; init; }
+        public required string Name { get; init; }
+        public virtual ISet<TechReg> TechRegs { get; init; } = new HashSet<TechReg>();
 
         public override string ToString()
         {
-            string techRegsStr = String.Join("\n", TechRegs);
+            var techRegsStr = String.Join("\n", TechRegs);
             if (techRegsStr.Length == 0)
                 techRegsStr = "Скорее всего таможня сертификаты требовать не будет";
 
-            return String.Format("{0}\n\nОписание\n{1}\n\nМеры\n{2}", Code, Name, techRegsStr);
+            return $"{Code}\n\nОписание\n{Name}\n\nМеры\n{techRegsStr}";
         }
     }
 }

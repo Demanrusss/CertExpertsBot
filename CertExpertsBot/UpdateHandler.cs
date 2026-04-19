@@ -19,13 +19,12 @@ namespace CertExpertsBot
                     await CallbackQueryHandler.HandleCallbackQueryAsync(botClient, update.CallbackQuery, cancellationToken);
                     break;
                 default:
-                    Console.WriteLine("New Type was found. " + update.Type.ToString());
+                    Console.WriteLine("New Type was found. " + update.Type);
                     break;
             }
         }
 
-        public static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, 
-            Exception exception, CancellationToken cancellationToken)
+        public static async Task HandlePollingErrorAsync(Exception exception)
         {
             Console.Error.WriteLine(exception);
             await Task.CompletedTask;

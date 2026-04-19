@@ -1,7 +1,7 @@
 ﻿namespace CertExpertsBot.Models
 {
-    internal class AppSettings
+    internal sealed class AppSettings
     {
-        public virtual IDictionary<string, string> ConnectionStrings { get; set; } = new Dictionary<string, string>();
+        public IDictionary<string, string> ConnectionStrings { get; } = new Dictionary<string, string>();
     }
 }

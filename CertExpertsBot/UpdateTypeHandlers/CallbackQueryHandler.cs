@@ -9,7 +9,7 @@ namespace CertExpertsBot.UpdateTypeHandlers
         public static async Task HandleCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery? callbackQuery,
             CancellationToken cancellationToken)
         {
-            if (callbackQuery == null || callbackQuery.Message == null || callbackQuery.Message.Text == null)
+            if (callbackQuery?.Message?.Text == null)
                 return;
 
             switch (callbackQuery.Data)
@@ -24,32 +24,46 @@ namespace CertExpertsBot.UpdateTypeHandlers
                 case "7":
                 case "8":
                 case "9":
-                    var text = callbackQuery.Message.Text + callbackQuery.Data;
-                    callbackQuery.Message.Text = text;
-                    var replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(text);
-                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
-                                                         callbackQuery.Message.MessageId,
-                                                         text,
-                                                         replyMarkup: replyMarkup);
-                    if (text.Length == 11)
-                        await MessageHandler.HandleMessageAsync(botClient, callbackQuery.Message, cancellationToken);
+                    await AddDigitHandler(botClient, callbackQuery, cancellationToken);
                     return;
                 case "removeNumber":
-                    text = callbackQuery.Message.Text;
-                    if (text.Length == 1)
-                        return;
-                    
-                    callbackQuery.Message.Text = text.Substring(0, text.Length - 1);
-                    replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(callbackQuery.Message.Text);
-                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
-                                                         callbackQuery.Message.MessageId,
-                                                         callbackQuery.Message.Text,
-                                                         replyMarkup: replyMarkup);
+                    await RemoveDigitHandler(botClient, callbackQuery, cancellationToken);
                     return;
                 default:
-                    Console.WriteLine($"{callbackQuery.Data} not implemented");
                     return;
             }
+        }
+        
+        private static async Task AddDigitHandler(ITelegramBotClient botClient, CallbackQuery callbackQuery,
+            CancellationToken cancellationToken)
+        {
+            var text = callbackQuery.Message!.Text + callbackQuery.Data;
+            callbackQuery.Message.Text = text;
+            var replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(text);
+            await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
+                callbackQuery.Message.MessageId,
+                text,
+                replyMarkup: replyMarkup,
+                cancellationToken: cancellationToken);
+            
+            if (text.Length == 11)
+                await MessageHandler.HandleMessageAsync(botClient, callbackQuery.Message, cancellationToken);
+        }
+        
+        private static async Task RemoveDigitHandler(ITelegramBotClient botClient, CallbackQuery callbackQuery,
+            CancellationToken cancellationToken)
+        {
+            var text = callbackQuery.Message!.Text!;
+            if (text.Length == 1)
+                return;
+                    
+            callbackQuery.Message.Text = text[..^1];
+            var replyMarkup = ReplyMarkupManager.ReplyMarkup_Numbers(callbackQuery.Message.Text);
+            await botClient.EditMessageTextAsync(callbackQuery.Message.Chat,
+                callbackQuery.Message.MessageId,
+                callbackQuery.Message.Text,
+                replyMarkup: replyMarkup,
+                cancellationToken: cancellationToken);
         }
     }
 }

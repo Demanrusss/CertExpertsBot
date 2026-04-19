@@ -1,15 +1,15 @@
 ﻿namespace CertExpertsBot.Models
 {
-    public class TechReg
+    public record TechReg
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
-        public virtual ICollection<TNVEDCode> TNVEDCodes { get; set; } = new HashSet<TNVEDCode>();
+        public int Id { get; init; }
+        public required string Name { get; init; }
+        public required string Description { get; init; }
+        public virtual ISet<TNVEDCode> TNVEDCodes { get; init; } = new HashSet<TNVEDCode>();
 
         public override string ToString()
         {
-            return String.Format("{0}. Требуется {1}", Name, Description);
+            return $"{Name}. Требуется {Description}";
         }
     }
 }

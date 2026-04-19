@@ -8,31 +8,29 @@ using Telegram.Bot.Types.Enums;
 
 namespace CertExpertsBot
 {
-    class Program
+    internal static class Program
     {
-        private static readonly string executableLocation = 
+        private static readonly string ExecutableLocation = 
             Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly()!.Location)!;
-        private static readonly string appSettingsPath = Path.Combine(executableLocation, "appsettings.json");
-        private static readonly AppSettings settings = JsonConvert
-            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(appSettingsPath))!;
+        private static readonly string AppSettingsPath = Path.Combine(ExecutableLocation, "appsettings.json");
+        private static readonly AppSettings Settings = JsonConvert
+            .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(AppSettingsPath))!;
 
-        static void Main(string[] args)
+        private static void Main()
         {
-            using (var memConnection = new SqliteConnection(settings!.ConnectionStrings["MemoryConnection"]))
-            {
-                memConnection.Open();
-                UploadDbToMemory(memConnection);
+            using var memConnection = new SqliteConnection(Settings.ConnectionStrings["MemoryConnection"]);
+            memConnection.Open();
+            UploadDbToMemory(memConnection);
 
-                StartBot();
+            StartBot();
 
-                memConnection.Close();
-            }
+            memConnection.Close();
         }
 
         private static void UploadDbToMemory(SqliteConnection connection)
         {
-            string dataSource = settings!.ConnectionStrings["DefaultConnection"].Split(';')[0];
-            string dbName = dataSource.Split('=')[1];
+            var dataSource = Settings.ConnectionStrings["DefaultConnection"].Split(';')[0];
+            var dbName = dataSource.Split('=')[1];
 
             var command = connection.CreateCommand();
             command.CommandText = String.Format("ATTACH '{0}' AS disk;", dbName);
@@ -51,7 +49,7 @@ namespace CertExpertsBot
 
         private static void StartBot()
         {
-            ITelegramBotClient bot = new TelegramBotClient(settings!.ConnectionStrings["CertExpertsBotToken"]);
+            ITelegramBotClient bot = new TelegramBotClient(Settings!.ConnectionStrings["CertExpertsBotToken"]);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
@@ -74,7 +72,7 @@ namespace CertExpertsBot
         {
             var receiverOptions = new ReceiverOptions();
 
-            var allowedUpdates = new UpdateType[]
+            var allowedUpdates = new[]
             {
                 UpdateType.Message,
                 UpdateType.CallbackQuery
@@ -86,16 +84,10 @@ namespace CertExpertsBot
             return receiverOptions;
         }
 
-        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, 
-            Update update, CancellationToken cancellationToken)
-        {
-            await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
-        }
+        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, 
+            CancellationToken cancellationToken) => await UpdateHandler.HandleUpdateAsync(botClient, update, cancellationToken);
 
-        private static async Task HandlePollingErrorAsync(ITelegramBotClient botClient,
-            Exception exception, CancellationToken cancellationToken)
-        {
-            await UpdateHandler.HandlePollingErrorAsync(botClient, exception, cancellationToken);
-        }
+        private static async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, 
+            CancellationToken cancellationToken) => await UpdateHandler.HandlePollingErrorAsync(exception);
     }
 }
