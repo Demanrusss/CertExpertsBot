@@ -16,13 +16,26 @@ namespace CertExpertsBot
         private static readonly AppSettings Settings = JsonConvert
             .DeserializeObject<AppSettings>(System.IO.File.ReadAllText(AppSettingsPath))!;
 
-        private static void Main()
+        private static async Task Main()
         {
-            using var memConnection = new SqliteConnection(Settings.ConnectionStrings["MemoryConnection"]);
+            using var cts = new CancellationTokenSource();
+
+            Console.CancelKeyPress += (_, e) =>
+            {
+                e.Cancel = true;
+                cts.Cancel();
+            };
+
+            AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+            {
+                cts.Cancel();
+            };
+
+            await using var memConnection = new SqliteConnection(Settings.ConnectionStrings["MemoryConnection"]);
             memConnection.Open();
             UploadDbToMemory(memConnection);
 
-            StartBot();
+            await StartBotAsync(cts.Token);
 
             memConnection.Close();
         }
@@ -47,12 +60,10 @@ namespace CertExpertsBot
             command.ExecuteNonQuery();
         }
 
-        private static void StartBot()
+        private static async Task StartBotAsync(CancellationToken cancellationToken)
         {
             ITelegramBotClient bot = new TelegramBotClient(Settings!.ConnectionStrings["CertExpertsBotToken"]);
 
-            var cts = new CancellationTokenSource();
-            var cancellationToken = cts.Token;
             var receiverOptions = CreateReceiverOptions();
 
             bot.StartReceiving(
@@ -62,10 +73,16 @@ namespace CertExpertsBot
                 cancellationToken
             );
 
-            Console.CancelKeyPress += (_, _) => cts.Cancel();
+            Console.WriteLine("Bot started");
 
-            Console.WriteLine("Bot started. Press ^C to stop");
-            Console.ReadLine();
+            try
+            {
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("Bot stopping...");
+            }
         }
 
         private static ReceiverOptions CreateReceiverOptions()
