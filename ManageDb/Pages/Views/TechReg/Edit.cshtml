@@ -6,19 +6,35 @@
 <h4>TechReg</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TechReg.Id" />
-            <div class="form-group">
-                <label asp-for="TechReg.Name" class="control-label"></label>
-                <input asp-for="TechReg.Name" class="form-control" required onclick="trim(this)" />
-                <span asp-validation-for="TechReg.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TechReg.Description" class="control-label"></label>
-                <input asp-for="TechReg.Description" class="form-control" required onclick="trim(this)" />
-                <span asp-validation-for="TechReg.Description" class="text-danger"></span>
+            <input type="hidden" asp-for="TechRegModel.Id" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="TechRegModel.Name" class="control-label"></label>
+                        <input asp-for="TechRegModel.Name" class="form-control" required onclick="trim(this)" />
+                        <span asp-validation-for="TechRegModel.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TechRegModel.Description" class="control-label"></label>
+                        <input asp-for="TechRegModel.Description" class="form-control" required onclick="trim(this)" />
+                        <span asp-validation-for="TechRegModel.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="SelectedTNVEDCodeIds" class="control-label">TNVED codes</label>
+                        <select asp-for="SelectedTNVEDCodeIds"
+                                asp-items="Model.TNVEDCodeMSL"
+                                class="form-control"
+                                multiple
+                                size="12">
+                        </select>
+                        <span asp-validation-for="SelectedTNVEDCodeIds" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <br />
             <div class="form-group">
@@ -27,12 +43,42 @@
         </form>
     </div>
 </div>
-
 <div>
     <a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#SelectedTNVEDCodeIds').select2({
+                ajax: {
+                    url: '/api/tnvedcodes',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function(data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Search for TNVED codes',
+                minimumInputLength: 1
+            });
+        });
+    </script>
     <script src="~/js/site.js"></script>
 }

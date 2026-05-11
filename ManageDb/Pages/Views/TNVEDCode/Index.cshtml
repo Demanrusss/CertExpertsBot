@@ -1,10 +1,10 @@
 ﻿@page "/TNVEDCode/{handler?}"
 @model ManageDb.Pages.Views.TNVEDCode.IndexModel
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
 <div class="row">
-    <div class="col-2">
+    <div class="col-md-2">
         <a asp-page="Create">Создать новый</a>
     </div>
     <div class="col text-end">
@@ -18,19 +18,19 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-1 col">
-        <input type="search" placeholder="Enter code" onchange="gotoSearchUrl(this)" />
+    <div class="col-md-1 col">
+        <input type="search" placeholder="Введите код" onchange="gotoSearchUrl(this)" />
     </div>
     <div class="col">
-        <input type="search" placeholder="Enter name" class="col-12" />
+        <input type="search" placeholder="Введите наименование" class="col-md-12" />
     </div>
 </div>
 <table class="table">
     <thead>
         <tr>
-            <th class="text-center">Код</th>
-            <th class="col-2">Наименование</th>
-            <th>Тех. регламенты / Решения</th>
+            <th class="col-md-1 text-start">Код</th>
+            <th class="col-md-4 text-center">Наименование</th>
+            <th class="col-md-3 text-center">Тех. регламенты / Решения</th>
             <th></th>
         </tr>
     </thead>
@@ -50,11 +50,11 @@
                 @Html.DisplayFor(modelTechReg => techReg.Name)<br />
             }
             </td>
-            <td class="col-md-2 text-end">
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-page="./Create" asp-route-id="@item.Id" asp-page-handler="CopyFrom">Copy</a>
+            <td class="text-end">
+                <a asp-page="./Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id" style="color: red;">Удалить</a> |
+                <a asp-page="./Create" asp-route-id="@item.Id" asp-page-handler="CopyFrom">Копировать</a>
             </td>
         </tr>
     }

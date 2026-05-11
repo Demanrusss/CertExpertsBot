@@ -1,48 +1,73 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace ManageDb.Pages.Views.TechReg
+namespace ManageDb.Pages.Views.TechReg;
+
+public class EditModel(ITechRegService<TechRegModel> techRegService, ITNVEDCodeService<TNVEDCodeModel> tnvedCodeService) : PageModel
 {
-    public class EditModel : PageModel
+    [BindProperty]
+    public TechRegModel TechRegModel { get; set; } = default!;
+
+    [BindProperty]
+    public int[] SelectedTNVEDCodeIds { get; set; } = [];
+
+    public MultiSelectList TNVEDCodeMSL { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        private readonly ITechRegService<Models.TechReg> techRegService;
+        ViewData["Title"] = "Edit";
 
-        public EditModel(ITechRegService<Models.TechReg> techRegService)
+        if (id == null)
+            return NotFound();
+
+        TechRegModel = await techRegService.GetByIdAsync(id.Value);
+        if (TechRegModel.Id == 0)
+            return NotFound();
+                
+        // Get current selected codes (needs a separate method or handled internally)
+        SelectedTNVEDCodeIds = TechRegModel.TNVEDCodes?.Select(x => x.Id).ToArray() ?? [];
+        await LoadTNVEDCodesAsync();
+
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
         {
-            this.techRegService = techRegService;
-        }
-
-        [BindProperty]
-        public ManageDb.Models.TechReg TechReg { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            ViewData["Title"] = "Edit";
-
-            if (id == null || techRegService == null)
-                return NotFound();
-
-            TechReg = await techRegService.GetByIdAsync(id.Value);
-            if (TechReg.Id == 0)
-                return NotFound();
-
+            await LoadTNVEDCodesAsync();
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        var result = await techRegService.UpdateAsync(TechRegModel);
+
+        // TechRegService update might not actually fail if 0 means "no scalar changes" or depending on implementation.
+        // But if it's fine, we update TNVEDs.
+        await techRegService.UpdateTNVEDCodesAsync(TechRegModel.Id, SelectedTNVEDCodeIds);
+
+        return RedirectToPage("./Index");
+    }
+        
+    private async Task LoadTNVEDCodesAsync()
+    {
+        // Instead of GetAllAsync (which returns top 10), we only load the CURRENTLY selected ones into the MultiSelectList
+        // so they display in the multi-select. The rest will be loaded via AJAX/Select2.
+            
+        var existingItems = (TechRegModel?.TNVEDCodes ?? Array.Empty<TNVEDCodeModel>()).ToList();
+            
+        var items = existingItems.OrderBy(x => x.Code).Select(x => new
         {
-            if (!ModelState.IsValid)
-                return Page();
+            x.Id,
+            Text = x.Code + " - " + x.Name
+        }).ToList();
 
-            int result = await techRegService.UpdateAsync(TechReg);
-
-            if (result == 0)
-                return NotFound();
-
-            return RedirectToPage("./Index");
-        }
+        TNVEDCodeMSL = new MultiSelectList(
+            items,
+            "Id",
+            "Text",
+            SelectedTNVEDCodeIds);
     }
 }

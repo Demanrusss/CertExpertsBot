@@ -1,43 +1,31 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ManageDb.Pages.Views.TNVEDCode
+namespace ManageDb.Pages.Views.TNVEDCode;
+
+public class IndexModel(ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService) : PageModel
 {
-    public class IndexModel : PageModel
+    public IEnumerable<TNVEDCodeModel> TNVEDCode { get;set; } = [];
+
+    public async Task OnGetAsync()
     {
-        private readonly ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService;
+        ViewData["Title"] = "Коды ТН ВЭД";
+        ViewData["PageSize"] = 10;
+        TNVEDCode = await tNvedCodeService.GetAllWithTechRegsAsync(1, 10);
+    }
 
-        public IndexModel(ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService)
-        {
-            this.tNVEDCodeService = tNVEDCodeService;
-        }
+    public async Task OnGetMoreOnPageAsync(int pageSize)
+    {
+        ViewData["Title"] = "Коды ТН ВЭД";
+        ViewData["PageSize"] = pageSize;
+        TNVEDCode = await tNvedCodeService.GetAllWithTechRegsAsync(1, pageSize);
+    }
 
-        public IEnumerable<ManageDb.Models.TNVEDCode> TNVEDCode { get;set; } = default!;
-
-        public async Task OnGetAsync()
-        {
-            ViewData["Title"] = "Коды ТН ВЭД";
-            ViewData["PageSize"] = 10;
-
-            if (tNVEDCodeService != null)
-                TNVEDCode = await tNVEDCodeService.GetAllWithTechRegsAsync(1, 10);
-        }
-
-        public async Task OnGetMoreOnPageAsync(int pageSize)
-        {
-            ViewData["Title"] = "Коды ТН ВЭД";
-            ViewData["PageSize"] = pageSize;
-
-            if (tNVEDCodeService != null)
-                TNVEDCode = await tNVEDCodeService.GetAllWithTechRegsAsync(1, pageSize);
-        }
-
-        public async Task OnGetSearchResultsAsync(string searchCode)
-        {
-            ViewData["Title"] = "Коды ТН ВЭД";
-            ViewData["PageSize"] = 100;
-
-            TNVEDCode = await tNVEDCodeService.GetByCodeWithTechRegsAsync(searchCode);
-        }
+    public async Task OnGetSearchResultsAsync(string searchCode)
+    {
+        ViewData["Title"] = "Коды ТН ВЭД";
+        ViewData["PageSize"] = 100;
+        TNVEDCode = await tNvedCodeService.GetByCodeWithTechRegsAsync(searchCode);
     }
 }

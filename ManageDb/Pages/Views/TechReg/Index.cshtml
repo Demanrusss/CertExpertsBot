@@ -1,7 +1,7 @@
 ﻿@page "/TechReg"
 @model ManageDb.Pages.Views.TechReg.IndexModel
 
-<h1>@ViewData["Title"]</h1>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
 <p>
     <a asp-page="Create">Создать новый</a>
@@ -10,8 +10,8 @@
     <thead>
         <tr>
             <th class="col">Наименование</th>
-            <th class="col-3">Описание</th>
-            <th class="col-2"></th>
+            <th class="col-md-3 text-center">Описание</th>
+            <th class="col-md-3"></th>
         </tr>
     </thead>
     <tbody>
@@ -20,13 +20,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            <td class="text-center">
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            <td class="col-md-2 text-end">
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            <td class="text-end">
+                <a asp-page="./Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id" style="color: red;">Удалить</a>
             </td>
         </tr>
 }

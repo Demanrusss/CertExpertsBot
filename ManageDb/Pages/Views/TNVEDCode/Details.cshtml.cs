@@ -1,32 +1,25 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ManageDb.Pages.Views.TNVEDCode
+namespace ManageDb.Pages.Views.TNVEDCode;
+
+public class DetailsModel(ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService) : PageModel
 {
-    public class DetailsModel : PageModel
+    public TNVEDCodeModel TnvedCodeModel { get; set; } = default!; 
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        private readonly ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService;
+        ViewData["Title"] = "Details";
 
-        public DetailsModel(ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService)
-        {
-            this.tNVEDCodeService = tNVEDCodeService;
-        }
+        if (id == null)
+            return NotFound();
 
-        public ManageDb.Models.TNVEDCode TNVEDCode { get; set; } = default!; 
+        TnvedCodeModel = await tNvedCodeService.GetByIdAsync(id.Value);
+        if (TnvedCodeModel.Id == 0)
+            return NotFound();
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            ViewData["Title"] = "Details";
-
-            if (id == null || tNVEDCodeService == null)
-                return NotFound();
-
-            TNVEDCode = await tNVEDCodeService.GetByIdAsync(id.Value);
-            if (TNVEDCode.Id == 0)
-                return NotFound();
-
-            return Page();
-        }
+        return Page();
     }
 }

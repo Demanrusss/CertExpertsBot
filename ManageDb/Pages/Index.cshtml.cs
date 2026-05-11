@@ -2,53 +2,33 @@
 using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ManageDb.Pages
+namespace ManageDb.Pages;
+
+public class IndexModel(ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService) : PageModel
 {
-    public class IndexModel : PageModel
+    public ICollection<TNVEDCodeModel> TNVEDCodes { get; set; }
+
+    public async Task OnGet()
     {
-        private readonly ITNVEDCodeService<TNVEDCode> tNVEDCodeService;
+        ViewData["Title"] = "Главная";
+        ViewData["PageSize"] = 100;
+        ViewData["RecordsQuantity"] = await tNvedCodeService.GetCountAsync();
+        TNVEDCodes = await tNvedCodeService.GetAllAsync(1, 100);
+    }
 
-        public ICollection<TNVEDCode> TNVEDCodes { get; set; }
+    public async Task OnGetMoreOnPageAsync(int pageSize)
+    {
+        ViewData["Title"] = "Главная";
+        ViewData["PageSize"] = pageSize;
+        ViewData["RecordsQuantity"] = await tNvedCodeService.GetCountAsync();
+        TNVEDCodes = await  tNvedCodeService.GetAllAsync(1, pageSize);
+    }
 
-        public IndexModel(ITNVEDCodeService<TNVEDCode> tNVEDCodeService)
-        {
-            this.tNVEDCodeService = tNVEDCodeService;
-        }
-
-        public async Task OnGet()
-        {
-            ViewData["Title"] = "Home page";
-            ViewData["PageSize"] = 100;
-
-            var countTask = tNVEDCodeService.GetCountAsync();
-            var allRecordsTask = tNVEDCodeService.GetAllAsync(1, 100);
-
-            ViewData["RecordsQuantity"] = await countTask;
-            TNVEDCodes = await allRecordsTask;
-        }
-
-        public async Task OnGetMoreOnPageAsync(int pageSize)
-        {
-            ViewData["Title"] = "Home page";
-            ViewData["PageSize"] = pageSize;
-
-            var countTask = tNVEDCodeService.GetCountAsync();
-            var allRecordsTask = tNVEDCodeService.GetAllAsync(1, pageSize);
-
-            ViewData["RecordsQuantity"] = await countTask;
-            TNVEDCodes = await allRecordsTask;
-        }
-
-        public async Task OnGetSearchResultsAsync(string searchCode)
-        {
-            ViewData["Title"] = "Home page";
-            ViewData["PageSize"] = 100;
-
-            var countTask = tNVEDCodeService.GetCountAsync();
-            var foundRecordsTask = tNVEDCodeService.GetByCodeAsync(searchCode);
-
-            ViewData["RecordsQuantity"] = await countTask;
-            TNVEDCodes = await foundRecordsTask;
-        }
+    public async Task OnGetSearchResultsAsync(string searchCode)
+    {
+        ViewData["Title"] = "Главная";
+        ViewData["PageSize"] = 100;
+        ViewData["RecordsQuantity"] = await tNvedCodeService.GetCountAsync();
+        TNVEDCodes = await tNvedCodeService.GetByCodeAsync(searchCode);
     }
 }

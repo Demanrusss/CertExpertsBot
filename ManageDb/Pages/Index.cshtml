@@ -2,17 +2,17 @@
 @model IndexModel
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Добро пожаловать</h1>
 </div>
 <div class="row">
-    <div class="col-2 col">
-        <text>Filters</text>
+    <div class="col-md-2 col-md">
+        <text>Фильтры</text>
     </div>
     <div class="col text-center">
         <h6><b>Всего записей: @ViewBag.RecordsQuantity</b></h6>
     </div>
-    <div class="col-1 text-end">Показать</div>
-    <div class="col-1 text-end">
+    <div class="col-md-2 text-end">
+        <b>Показать</b>
         <select onchange="gotoUrl(this)">
             <option value="10">10</option>
             <option value="25">25</option>
@@ -22,11 +22,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-2 col">
-        <input type="search" placeholder="Enter code" onchange="gotoSearchUrl(this)" />
+    <div class="col-md-2 col">
+        <input type="search" placeholder="Введите код" onchange="gotoSearchUrl(this)" />
     </div>
     <div class="col">
-        <input type="search" placeholder="Enter name" class="col-12" />
+        <input type="search" placeholder="Введите наименование" class="col-12" />
     </div>
 </div>
 <div class="text-start">
@@ -34,7 +34,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="col-2" scope="col">Код ТН ВЭД</th>
+                    <th class="col-md-2" scope="col">Код ТН ВЭД</th>
                     <th scope="col">Наименование</th>
                 </tr>
             </thead>

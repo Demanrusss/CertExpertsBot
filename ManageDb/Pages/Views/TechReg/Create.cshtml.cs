@@ -1,36 +1,29 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ManageDb.Pages.Views.TechReg
+namespace ManageDb.Pages.Views.TechReg;
+
+public class CreateModel(ITechRegService<TechRegModel> techRegService) : PageModel
 {
-    public class CreateModel : PageModel
+    public IActionResult OnGet()
     {
-        private readonly ITechRegService<Models.TechReg> techRegService;
+        ViewData["Title"] = "Create";
 
-        public CreateModel(ITechRegService<Models.TechReg> techRegService)
-        {
-            this.techRegService = techRegService;
-        }
+        return Page();
+    }
+
+    [BindProperty]
+    public TechRegModel TechRegModel { get; set; } = default!;
         
-        public IActionResult OnGet()
-        {
-            ViewData["Title"] = "Create";
-
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid)
             return Page();
-        }
 
-        [BindProperty]
-        public ManageDb.Models.TechReg TechReg { get; set; } = default!;
-        
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid || TechReg == null)
-                return Page();
+        await techRegService.AddAsync(TechRegModel);
 
-            await techRegService.AddAsync(TechReg);
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

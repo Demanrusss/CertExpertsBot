@@ -1,9 +1,8 @@
-﻿namespace ManageDb.Services
+﻿namespace ManageDb.Services;
+
+public interface ITNVEDCodeService<T> : IService<T>
 {
-    public interface ITNVEDCodeService<T> : IService<T>
-    {
-        Task<ICollection<T>> GetByCodeAsync(string searchStr);
-        Task<ICollection<T>> GetAllWithTechRegsAsync(int page, int pageSize);
-        Task<ICollection<T>> GetByCodeWithTechRegsAsync(string searchStr);
-    }
+    Task<ICollection<T>> GetByCodeAsync(string searchStr);
+    Task<ICollection<T>> GetAllWithTechRegsAsync(int page, int pageSize);
+    Task<ICollection<T>> GetByCodeWithTechRegsAsync(string searchStr);
 }

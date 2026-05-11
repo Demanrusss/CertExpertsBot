@@ -9,9 +9,11 @@ string? connection = builder.Configuration.GetConnectionString("DefaultConnectio
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<ITechRegService<TechReg>, TechRegService>();
-builder.Services.AddScoped<ITNVEDCodeService<TNVEDCode>, TNVEDCodeService>();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connection));
+builder.Services.AddScoped<ITechRegService<TechRegModel>, TechRegService>();
+builder.Services.AddScoped<ITNVEDCodeService<TNVEDCodeModel>, TNVEDCodeService>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -30,6 +32,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapRazorPages();
 
 app.Run();

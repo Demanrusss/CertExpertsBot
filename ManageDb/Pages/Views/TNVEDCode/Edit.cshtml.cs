@@ -1,67 +1,60 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ManageDb.Pages.Views.TNVEDCode
+namespace ManageDb.Pages.Views.TNVEDCode;
+
+public class EditModel(
+    ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService,
+    ITechRegService<TechRegModel> techRegService)
+    : TechRegNamePageModel
 {
-    public class EditModel : TechRegNamePageModel
+    [BindProperty]
+    public TNVEDCodeModel TnvedCodeModel { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        private readonly ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService;
-        private readonly ITechRegService<Models.TechReg> techRegService;
+        ViewData["Title"] = "Edit";
 
-        public EditModel(ITNVEDCodeService<Models.TNVEDCode> tNVEDCodeService,
-                         ITechRegService<Models.TechReg> techRegService)
-        {
-            this.tNVEDCodeService = tNVEDCodeService;
-            this.techRegService = techRegService;
-        }
+        if (id == null)
+            return NotFound();
 
-        [BindProperty]
-        public ManageDb.Models.TNVEDCode TNVEDCode { get; set; } = default!;
+        TnvedCodeModel = await tNvedCodeService.GetByIdAsync(id.Value);
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            ViewData["Title"] = "Edit";
+        if (TnvedCodeModel.Id == 0)
+            return NotFound();
 
-            if (id == null || tNVEDCodeService == null)
-                return NotFound();
+        var selectedTechRegs = TnvedCodeModel.TechRegs ?? [];
+        PopulateTechRegsDropDownList(techRegService, selectedTechRegs);
 
-            TNVEDCode = await tNVEDCodeService.GetByIdAsync(id.Value);
+        return Page();
+    }
 
-            if (TNVEDCode.Id == 0)
-                return NotFound();
-
-            var selectedTechRegs = TNVEDCode.TechRegs;
-            PopulateTechRegsDropDownList(techRegService, selectedTechRegs);
-
+    public async Task<IActionResult> OnPostAsync(int[] TNVEDCode_TechRegs)
+    {
+        if (!ModelState.IsValid)
             return Page();
-        }
 
-        public async Task<IActionResult> OnPostAsync(int[] TNVEDCode_TechRegs)
+        await AddTechRegs(TNVEDCode_TechRegs);
+
+        var result = await tNvedCodeService.UpdateAsync(TnvedCodeModel);
+        if (result == 0)
+            return NotFound();
+
+        return RedirectToPage("./Index");
+    }
+
+    private async Task AddTechRegs(int[] TNVEDCode_TechRegs)
+    {
+        TnvedCodeModel.TechRegs = new List<TechRegModel>();
+        TechRegModel techRegModel;
+        foreach (var t in TNVEDCode_TechRegs)
         {
-            if (!ModelState.IsValid)
-                return Page();
+            techRegModel = await techRegService.GetByIdAsync(t);
+            if (techRegModel.Id == 0)
+                continue;
 
-            await AddTechRegs(TNVEDCode_TechRegs);
-
-            var result = await tNVEDCodeService.UpdateAsync(TNVEDCode);
-            if (result == 0)
-                return NotFound();
-
-            return RedirectToPage("./Index");
-        }
-
-        private async Task AddTechRegs(int[] TNVEDCode_TechRegs)
-        {
-            TNVEDCode.TechRegs = new List<Models.TechReg>();
-            Models.TechReg techReg;
-            for (int i = 0; i < TNVEDCode_TechRegs.Length; i++)
-            {
-                techReg = await techRegService.GetByIdAsync(TNVEDCode_TechRegs[i]);
-                if (techReg.Id == 0)
-                    continue;
-
-                TNVEDCode.TechRegs.Add(techReg);
-            }
+            TnvedCodeModel.TechRegs.Add(techRegModel);
         }
     }
 }

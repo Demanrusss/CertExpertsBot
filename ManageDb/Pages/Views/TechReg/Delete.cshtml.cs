@@ -1,44 +1,37 @@
-﻿using ManageDb.Services;
+﻿using ManageDb.Models;
+using ManageDb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ManageDb.Pages.Views.TechReg
+namespace ManageDb.Pages.Views.TechReg;
+
+public class DeleteModel(ITechRegService<TechRegModel> techRegService) : PageModel
 {
-    public class DeleteModel : PageModel
+    [BindProperty]
+    public TechRegModel TechRegModel { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        private readonly ITechRegService<Models.TechReg> techRegService;
+        ViewData["Title"] = "Delete";
 
-        public DeleteModel(ITechRegService<Models.TechReg> techRegService)
-        {
-            this.techRegService = techRegService;
-        }
+        if (id == null)
+            return NotFound();
 
-        [BindProperty]
-        public ManageDb.Models.TechReg TechReg { get; set; } = default!;
+        TechRegModel = await techRegService.GetByIdAsync(id.Value);
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            ViewData["Title"] = "Delete";
+        if (TechRegModel.Id == 0)
+            return NotFound();
 
-            if (id == null || techRegService == null)
-                return NotFound();
+        return Page();
+    }
 
-            TechReg = await techRegService.GetByIdAsync(id.Value);
-
-            if (TechReg.Id == 0)
-                return NotFound();
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null || techRegService == null)
-                return NotFound();
+    public async Task<IActionResult> OnPostAsync(int? id)
+    {
+        if (id == null)
+            return NotFound();
             
-            await techRegService.DeleteAsync(id.Value);
+        await techRegService.DeleteAsync(id.Value);
 
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

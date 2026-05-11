@@ -2,96 +2,100 @@
 using ManageDb.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ManageDb.Services
+namespace ManageDb.Services;
+
+public class TechRegService(AppDbContext dbContext) : ITechRegService<TechRegModel>
 {
-    public class TechRegService : ITechRegService<TechReg>
-    {
-        private readonly AppDbContext dbContext;
+    public async Task<ICollection<TechRegModel>> GetAllAsync() => await dbContext.TechRegs.ToListAsync();
 
-        public TechRegService(AppDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
-
-        public async Task<ICollection<TechReg>> GetAllAsync()
-        {
-            return await dbContext.TechRegs.ToListAsync();
-        }
-
-        public async Task<ICollection<TechReg>> GetAllAsync(int page, int pageSize)
-        {
-            if (page < 1 || pageSize < 10)
-                return await dbContext.TechRegs
-                    .OrderByDescending(tr => tr.Name)
-                    .Take(10)
-                    .ToListAsync();
-
-            return await dbContext.TechRegs
+    public async Task<ICollection<TechRegModel>> GetAllAsync(int page, int pageSize) =>
+        page < 1 || pageSize < 10
+            ? await dbContext.TechRegs
+                .OrderByDescending(tr => tr.Name)
+                .Take(10)
+                .ToListAsync()
+            : await dbContext.TechRegs
                 .OrderByDescending(tr => tr.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
-        }
 
-        public async Task<TechReg> GetByIdAsync(int id)
-        {
-            var techReg = await dbContext.TechRegs.FirstOrDefaultAsync(tr => tr.Id == id);
+    public async Task<TechRegModel> GetByIdAsync(int id) =>
+        await dbContext.TechRegs
+            .Include(tr => tr.TNVEDCodes)
+            .FirstOrDefaultAsync(tr => tr.Id == id) ?? new TechRegModel();
 
-            return techReg ?? new TechReg();
-        }
+    public async Task<ICollection<TechRegModel>> GetByNameAsync(string searchStr) =>
+        String.IsNullOrWhiteSpace(searchStr)
+            ? await GetAllAsync()
+            : await dbContext.TechRegs.Where(tr => tr.Name.Contains(searchStr)).ToListAsync();
 
-        public async Task<ICollection<TechReg>> GetByNameAsync(string searchStr)
-        {
-            if (String.IsNullOrWhiteSpace(searchStr))
-                return await GetAllAsync();
+    public async Task<int> AddAsync(TechRegModel entity)
+    {
+        var techReg = await GetByIdAsync(entity.Id);
+        if (techReg.Id != 0)
+            return 0;
 
-            return await dbContext.TechRegs.Where(tr => tr.Name.Contains(searchStr)).ToListAsync();
-        }
+        dbContext.TechRegs.Add(entity);
 
-        public async Task<int> AddAsync(TechReg entity)
-        {
-            if (entity == null)
-                return 0;
-
-            var techReg = await GetByIdAsync(entity.Id);
-            if (techReg.Id != 0)
-                return 0;
-
-            dbContext.TechRegs.Add(entity);
-
-            return await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<int> UpdateAsync(TechReg entity)
-        {
-            if (entity == null)
-                return 0;
-
-            var techReg = await GetByIdAsync(entity.Id);
-            if (techReg.Id == 0)
-                return 0;
-
-            techReg.Name = entity.Name;
-            techReg.Description = entity.Description;
-            dbContext.TechRegs.Update(techReg);
-
-            return await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<int> DeleteAsync(int id)
-        {
-            var techReg = await GetByIdAsync(id);
-            if (techReg.Id == 0)
-                return 0;
-
-            dbContext.TechRegs.Remove(techReg);
-
-            return await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<int> GetCountAsync()
-        {
-            return await dbContext.TechRegs.CountAsync();
-        }
+        return await dbContext.SaveChangesAsync();
     }
+
+    public async Task<int> UpdateAsync(TechRegModel entity)
+    {
+        var techReg = await GetByIdAsync(entity.Id);
+        if (techReg.Id == 0)
+            return 0;
+
+        techReg.Name = entity.Name;
+        techReg.Description = entity.Description;
+        dbContext.TechRegs.Update(techReg);
+
+        return await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> UpdateTNVEDCodesAsync(int techRegId, IReadOnlyCollection<int> tnvedCodeIds)
+    {
+        var techReg = await dbContext.TechRegs
+            .Include(x => x.TNVEDCodes)
+            .FirstOrDefaultAsync(x => x.Id == techRegId);
+
+        if (techReg == null)
+            return 0;
+
+        var selectedIds = tnvedCodeIds.ToHashSet();
+
+        var codesToRemove = techReg.TNVEDCodes
+            .Where(x => !selectedIds.Contains(x.Id))
+            .ToList();
+
+        foreach (var code in codesToRemove)
+            techReg.TNVEDCodes.Remove(code);
+
+        var existingIds = techReg.TNVEDCodes
+            .Select(x => x.Id)
+            .ToHashSet();
+
+        var codesToAdd = await dbContext.TNVEDCodes
+            .Where(x => selectedIds.Contains(x.Id) && !existingIds.Contains(x.Id))
+            .ToListAsync();
+
+        foreach (var code in codesToAdd)
+            techReg.TNVEDCodes.Add(code);
+
+        return await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> DeleteAsync(int id)
+    {
+        var techReg = await GetByIdAsync(id);
+        if (techReg.Id == 0)
+            return 0;
+
+        dbContext.TechRegs.Remove(techReg);
+
+        return await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<int> GetCountAsync() => await dbContext.TechRegs.CountAsync();
 }

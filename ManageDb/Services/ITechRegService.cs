@@ -1,7 +1,6 @@
-﻿namespace ManageDb.Services
+﻿namespace ManageDb.Services;
+
+public interface ITechRegService<T> : IService<T>
 {
-    public interface ITechRegService<T> : IService<T>
-    {
-        Task<ICollection<T>> GetByNameAsync(string searchStr);
-    }
+    Task<int> UpdateTNVEDCodesAsync(int techRegId, IReadOnlyCollection<int> tnvedCodeIds);
 }
