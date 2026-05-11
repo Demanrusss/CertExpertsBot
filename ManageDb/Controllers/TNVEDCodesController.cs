@@ -19,7 +19,7 @@ public class TNVEDCodesController(ITNVEDCodeService<TNVEDCodeModel> tnvedCodeSer
         var items = codes.Select(c => new
         {
             id = c.Id,
-            text = c.Code + " - " + c.Name
+            text = c.Code
         }).ToList();
 
         return Ok(new { items, total_count = items.Count });

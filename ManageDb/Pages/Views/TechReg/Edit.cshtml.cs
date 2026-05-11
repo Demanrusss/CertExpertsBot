@@ -50,7 +50,7 @@ public class EditModel(ITechRegService<TechRegModel> techRegService) : PageModel
         var items = existingItems.OrderBy(x => x.Code).Select(x => new
         {
             x.Id,
-            Text = x.Code + " - " + x.Name
+            Text = x.Code
         }).ToList();
 
         TNVEDCodeMSL = new MultiSelectList(
