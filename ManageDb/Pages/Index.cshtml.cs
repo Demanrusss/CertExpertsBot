@@ -11,9 +11,9 @@ public class IndexModel(ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService) : Pa
     public async Task OnGet()
     {
         ViewData["Title"] = "Главная";
-        ViewData["PageSize"] = 100;
+        ViewData["PageSize"] = 10;
         ViewData["RecordsQuantity"] = await tNvedCodeService.GetCountAsync();
-        TNVEDCodes = await tNvedCodeService.GetAllAsync(1, 100);
+        TNVEDCodes = await tNvedCodeService.GetAllAsync(1, 10);
     }
 
     public async Task OnGetMoreOnPageAsync(int pageSize)

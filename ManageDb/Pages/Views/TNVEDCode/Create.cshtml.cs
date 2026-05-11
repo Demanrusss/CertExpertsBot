@@ -11,7 +11,7 @@ public class CreateModel(
 {
     public IActionResult OnGet()
     {
-        ViewData["Title"] = "Create";
+        ViewData["Title"] = "Создать";
 
         PopulateTechRegsDropDownList(techRegService, new List<TechRegModel>());
 
@@ -20,7 +20,7 @@ public class CreateModel(
 
     public async Task<IActionResult> OnGetCopyFrom(int id)
     {
-        ViewData["Title"] = $"Create from {id}";
+        ViewData["Title"] = $"Создать как копию с {id}";
 
         if (id == 0)
             return NotFound();

@@ -12,7 +12,7 @@ public class DeleteModel(ITechRegService<TechRegModel> techRegService) : PageMod
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        ViewData["Title"] = "Delete";
+        ViewData["Title"] = "Удалить";
 
         if (id == null)
             return NotFound();

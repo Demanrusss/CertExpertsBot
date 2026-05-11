@@ -11,7 +11,7 @@ public class DetailsModel(ITNVEDCodeService<TNVEDCodeModel> tNvedCodeService) : 
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        ViewData["Title"] = "Details";
+        ViewData["Title"] = "Подробнее";
 
         if (id == null)
             return NotFound();

@@ -11,7 +11,7 @@ public class DetailsModel(ITechRegService<TechRegModel> techRegService) : PageMo
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        ViewData["Title"] = "Details";
+        ViewData["Title"] = "Подробнее";
 
         if (id == null)
             return NotFound();

@@ -9,7 +9,7 @@ public class CreateModel(ITechRegService<TechRegModel> techRegService) : PageMod
 {
     public IActionResult OnGet()
     {
-        ViewData["Title"] = "Create";
+        ViewData["Title"] = "Создать";
 
         return Page();
     }

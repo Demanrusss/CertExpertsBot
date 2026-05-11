@@ -3,7 +3,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<h4>TechReg</h4>
+<h4>Технический регламент</h4>
 <hr />
 <div class="row">
     <div class="col-md-8">
@@ -25,7 +25,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label asp-for="SelectedTNVEDCodeIds" class="control-label">TNVED codes</label>
+                        <label asp-for="SelectedTNVEDCodeIds" class="control-label">Коды ТН ВЭД</label>
                         <select asp-for="SelectedTNVEDCodeIds"
                                 asp-items="Model.TNVEDCodeMSL"
                                 class="form-control"
@@ -38,13 +38,13 @@
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 <div>
-    <a asp-page="./Index">Back to List</a>
+    <a asp-page="./Index">Назад к списку</a>
 </div>
 
 @section Scripts {
@@ -60,7 +60,7 @@
                     delay: 250,
                     data: function(params) {
                         return {
-                            q: params.term, // search term
+                            q: params.term,
                             page: params.page || 1
                         };
                     },
@@ -75,7 +75,7 @@
                     },
                     cache: true
                 },
-                placeholder: 'Search for TNVED codes',
+                placeholder: 'Поиск по кодам ТН ВЭД',
                 minimumInputLength: 1
             });
         });

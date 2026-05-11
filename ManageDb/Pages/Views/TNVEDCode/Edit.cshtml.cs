@@ -14,7 +14,7 @@ public class EditModel(
 
     public async Task<IActionResult> OnGetAsync(int? id)
     {
-        ViewData["Title"] = "Edit";
+        ViewData["Title"] = "Изменить";
 
         if (id == null)
             return NotFound();
