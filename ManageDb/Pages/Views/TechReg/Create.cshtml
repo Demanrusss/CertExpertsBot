@@ -6,18 +6,20 @@
 <h4>Технический регламент</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TechRegModel.Name" class="control-label"></label>
-                <input asp-for="TechRegModel.Name" class="form-control" required onchange="trim(this)" />
-                <span asp-validation-for="TechRegModel.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TechRegModel.Description" class="control-label"></label>
-                <input asp-for="TechRegModel.Description" class="form-control" required onchange="trim(this)" />
-                <span asp-validation-for="TechRegModel.Description" class="text-danger"></span>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label asp-for="TechRegModel.Name" class="control-label"></label>
+                    <textarea asp-for="TechRegModel.Name" class="form-control" required onchange="trim(this)"></textarea>
+                    <span asp-validation-for="TechRegModel.Name" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="TechRegModel.Description" class="control-label"></label>
+                    <textarea asp-for="TechRegModel.Description" class="form-control" required onchange="trim(this)"></textarea>
+                    <span asp-validation-for="TechRegModel.Description" class="text-danger"></span>
+                </div>
             </div>
             <br />
             <div class="form-group">
