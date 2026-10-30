@@ -15,6 +15,7 @@
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="TNVEDBotDb.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
